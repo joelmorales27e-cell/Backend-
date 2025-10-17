@@ -54,8 +54,12 @@ const obtenerProveedores = async (req, res) => {
     const proveedores = await Proveedor.findAll();
     res.json(proveedores);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener proveedores' });
+    console.error('Error en obtenerProveedores:', err);
+    // En producción no devolvemos detalles; en desarrollo devolvemos el error para depurar
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(500).json({ error: 'Error al obtener proveedores' });
+    }
+    return res.status(500).json({ error: 'Error al obtener proveedores', details: err.message || err });
   }
 };
 
@@ -113,4 +117,4 @@ app.delete(['/proveedores/:id', '/proveedor/:id'], async (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(3000, () => console.log('🚀 Servidor ejecutándose en http://localhost:3000'));
+app.listen(4000, () => console.log('🚀 Servidor ejecutándose en http://localhost:4000/proveedores'));
