@@ -8,14 +8,27 @@ app.use(express.json());
 
 // Configurar CORS público para todas las rutas
 // Permite cualquier origen y habilita responses a preflight (OPTIONS)
+// Usar cors() como middleware global (maneja preflight automáticamente)
 app.use(cors());
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
-  next();
-})
+
+// Registro de eventos para ayuda en debugging si el proceso termina
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+process.on('beforeExit', (code) => {
+  console.log('Process beforeExit event with code:', code);
+});
+process.on('exit', (code) => {
+  console.log('Process exit event with code:', code);
+});
+
+// Heartbeat para facilitar debug: registra cada 5s y mantiene el event loop vivo
+setInterval(() => {
+  console.log('heartbeat - server alive at', new Date().toISOString());
+}, 5000);
 // Conexión a la base de datos
 sequelize.authenticate()
   .then(() => console.log('✅ Conectado a la base de datos'))
