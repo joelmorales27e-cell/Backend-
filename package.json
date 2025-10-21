@@ -6,8 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "echo 'Iniciando build del servidor Express...'",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest"
   },
   "dependencies": {
